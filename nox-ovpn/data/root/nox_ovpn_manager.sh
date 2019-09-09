@@ -37,7 +37,7 @@ StartOvpn() {
 		echo "Auth file $ConfigAuth is exist"
 		openvpn --config "$ConfigFile" --auth-user-pass "$ConfigAuth" --route-nopull --writepid "$InstancePidFile" --log "$InstanceLogFile" --dev "$OvpnIfName" --dev-type tun --daemon #--management 127.0.0.1 $ManagamentPort 
 	else
-		openvpn--config "$ConfigFile" --daemon --route-nopull --writepid "$InstancePidFile" --log "$InstanceLogFile" --dev "$OvpnIfName" --dev-type tun #--management "localhost $ManagamentPort" 
+		openvpn --config "$ConfigFile" --daemon --route-nopull --writepid "$InstancePidFile" --log "$InstanceLogFile" --dev "$OvpnIfName" --dev-type tun #--management "localhost $ManagamentPort" 
 	fi
 	echo "openvpn instance started." # Management console available on $ManagamentPort local port"
 }
@@ -45,12 +45,13 @@ StartOvpn() {
 
 if [ "$ACTION" = "help" ] ; then
 	echo "Using: $0 (start|stop|restart|status|log) instance_id [tail]
-	Optionally arg 'tail' print openvpn log to stdin.
+	Optionally arg 'tail' - print openvpn log to stdin.
 	All configs placed in $ConfigsFolder folder
 	Naming 	<num>.ovpn	- main config file
 			<num>.auth	- file with login and pass (not required)"
+		
 #start openvpn instance
-if [ "$ACTION" = "start" ] ; then
+elif [ "$ACTION" = "start" ] ; then
 	StartOvpn
 #print status
 elif [ "$ACTION" = "status" ] ; then
@@ -96,6 +97,7 @@ elif [ "$ACTION" = "restart" ] ; then
 else
 	echo "No command $ACTION"
 fi
+
 if [ "$3" = "tail" ]
 then 
 	echo "press ctrl+^c for close"
