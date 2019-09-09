@@ -1,0 +1,30 @@
+#!/bin/sh /etc/rc.common
+START=90
+STOP=90
+ 
+start() {        
+    #configure routes
+	# subnetId 	= 192.168.1.8
+	# broadcast = 192.168.1.15
+	# hostRange	= 192.168.1.9 - 192.168.1.14
+	# mask		= 255.255.255.248, 0.0.0.7, /29
+	ip rule add from 192.168.1.8/29 lookup nox_blackhole
+	ip rule add from 192.168.1.9    lookup nox_9
+	ip rule add from 192.168.1.10   lookup nox_10
+	ip rule add from 192.168.1.11   lookup nox_11
+	ip rule add from 192.168.1.12   lookup nox_12
+	ip rule add from 192.168.1.13   lookup nox_13
+	ip rule add from 192.168.1.14   lookup nox_14
+	ip route add blackhole default table nox_blackhole
+}                 
+ 
+stop() {          
+    ip rule delete from 192.168.1.8/29 
+	ip rule delete from 192.168.1.9    
+	ip rule delete from 192.168.1.10   
+	ip rule delete from 192.168.1.11   
+	ip rule delete from 192.168.1.12   
+	ip rule delete from 192.168.1.13   
+	ip rule delete from 192.168.1.14   
+}
+

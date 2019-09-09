@@ -1,0 +1,30 @@
+#!/bin/sh
+
+echo "delete rules"
+ip rule delete from 192.168.1.8/29 
+ip rule delete from 192.168.1.9    
+ip rule delete from 192.168.1.10   
+ip rule delete from 192.168.1.11   
+ip rule delete from 192.168.1.12   
+ip rule delete from 192.168.1.13   
+ip rule delete from 192.168.1.14   
+grep -v -e '[0-9][0-9][0-9]\tnox_.*' -e '#nox tables' /etc/iproute2/rt_tables > /etc/iproute2/rt_tables
+
+echo "delete interfaces from uci"
+uci delete network.nox_ovpn_9
+uci delete network.nox_ovpn_10
+uci delete network.nox_ovpn_11
+uci delete network.nox_ovpn_12
+uci delete network.nox_ovpn_13
+uci delete network.nox_ovpn_14
+
+echo "delete zone from firewall"
+uci delete firewall.nox_ovpn
+
+echo "apply changes"
+uci commit network
+/etc/init.d/network reload
+uci commit firewall
+/etc/init.d/firewall reload
+
+exit 0

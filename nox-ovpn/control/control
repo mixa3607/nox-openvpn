@@ -1,0 +1,8 @@
+Package: nox-openvpn
+Version: 1.1
+Source: https://github.com/mixa3607/nox_openvpn
+Maintainer: https://github.com/mixa3607
+License: MIT
+Architecture: all
+Description: Multi openvpn for nox instances
+Depends: openvpn

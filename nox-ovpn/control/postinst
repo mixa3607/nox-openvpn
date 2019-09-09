@@ -1,0 +1,75 @@
+#!/bin/sh
+echo "add nox tables to /etc/iproute2/rt_tables"
+echo '
+209	nox_9
+210	nox_10
+211	nox_11
+212	nox_12
+213	nox_13
+214	nox_14
+220	nox_blackhole' >> /etc/iproute2/rt_tables
+
+echo "add interfaces to uci"
+uci set network.nox_ovpn_9=interface                    > /dev/null
+uci set network.nox_ovpn_9.ifname=nox_ovpn_9            > /dev/null
+uci set network.nox_ovpn_9.proto=none                   > /dev/null
+uci set network.nox_ovpn_9.auto=1                       > /dev/null
+
+uci set network.nox_ovpn_10=interface                   > /dev/null
+uci set network.nox_ovpn_10.ifname=nox_ovpn_10          > /dev/null
+uci set network.nox_ovpn_10.proto=none                  > /dev/null
+uci set network.nox_ovpn_10.auto=1                      > /dev/null
+
+uci set network.nox_ovpn_11=interface                   > /dev/null
+uci set network.nox_ovpn_11.ifname=nox_ovpn_11          > /dev/null
+uci set network.nox_ovpn_11.proto=none                  > /dev/null
+uci set network.nox_ovpn_11.auto=1                      > /dev/null
+
+uci set network.nox_ovpn_12=interface                   > /dev/null
+uci set network.nox_ovpn_12.ifname=nox_ovpn_12          > /dev/null
+uci set network.nox_ovpn_12.proto=none                  > /dev/null
+uci set network.nox_ovpn_12.auto=1                      > /dev/null
+
+uci set network.nox_ovpn_13=interface                   > /dev/null
+uci set network.nox_ovpn_13.ifname=nox_ovpn_13          > /dev/null
+uci set network.nox_ovpn_13.proto=none                  > /dev/null
+uci set network.nox_ovpn_13.auto=1                      > /dev/null
+
+uci set network.nox_ovpn_14=interface                   > /dev/null
+uci set network.nox_ovpn_14.ifname=nox_ovpn_14          > /dev/null
+uci set network.nox_ovpn_14.proto=none                  > /dev/null
+uci set network.nox_ovpn_14.auto=1                      > /dev/null
+
+echo "add zone to firewall"
+uci set firewall.nox_ovpn=zone                          > /dev/null
+uci set firewall.nox_ovpn.name=nox_ovpn                 > /dev/null
+uci set firewall.nox_ovpn.input=ACCEPT                  > /dev/null
+uci set firewall.nox_ovpn.forward=REJECT                > /dev/null
+uci set firewall.nox_ovpn.output=ACCEPT                 > /dev/null
+uci set firewall.nox_ovpn.masq=1                        > /dev/null
+
+echo "add ifs to zone"
+uci add_list firewall.nox_ovpn.network=nox_ovpn_9       > /dev/null
+uci add_list firewall.nox_ovpn.network=nox_ovpn_10      > /dev/null
+uci add_list firewall.nox_ovpn.network=nox_ovpn_11      > /dev/null
+uci add_list firewall.nox_ovpn.network=nox_ovpn_12      > /dev/null
+uci add_list firewall.nox_ovpn.network=nox_ovpn_13      > /dev/null
+uci add_list firewall.nox_ovpn.network=nox_ovpn_14      > /dev/null
+
+echo "allow access from lan to vpn"
+uci set firewall.fw_lan_to_vpn=forwarding               > /dev/null
+uci set firewall.fw_lan_to_vpn.src=lan                  > /dev/null
+uci set firewall.fw_lan_to_vpn.dest=nox_ovpn            > /dev/null
+
+echo "apply changes"
+uci commit network                                      > /dev/null
+/etc/init.d/network reload                              > /dev/null
+uci commit firewall                                     > /dev/null
+/etc/init.d/firewall reload                             > /dev/null
+/etc/init.d/nox_ovpn_onboot start
+/etc/init.d/nox_ovpn_onboot enable
+
+#create dirs
+mkdir /root/nox_ovpn_configs
+
+exit 0
